@@ -1,31 +1,35 @@
-# BioMotion-AI Enterprise SDK
+<a href="https://saikanagat.com/papers/monocular-biomechanics"><img src=".github/assets/banner.svg" width="100%" alt="BioMotion AI. A tracked figure walks on the spot."></a>
 
-Production-ready initialization scaffold for a monocular visual-to-neural-control biomechanics pipeline.
+# BioMotion-AI
 
-## Repository Layout
+A scaffold for a single-camera biomechanics pipeline: video in, estimates of motion and joint force out.
 
-- `.github/workflows/` CI validation for tests and benchmark gate checks
-- `src/frontend/` ingestion, face-blurring, PromptHMR, PromptHMR-Vid stubs
-- `src/kinetics/` diffusion kinetics and hybrid physics consistency stubs
-- `src/simulation/` MuscleMimic, MuJoCo Warp CUDA skeletons, synergy/SVK mechanics
-- `src/biomarkers/` CNN-BiGRU-Attention KCF estimator scaffold
-- `docs/` architecture and benchmark strategy docs
-- `tests/` pytest suite for latency/RMSE benchmark threshold checks
-- `config.yaml` core performance and security gates
-- `ARCHITECTURE_SPEC.md` full technical reference
+**Status: early scaffold.** The modules under `src/` are small stubs that fix the shapes and interfaces between stages. No trained model ships here, and the numbers in `config.yaml` are target gates, not measured results.
 
-## Benchmarking Priority Guidance
+## The pipeline
 
-Start with **desktop GPU scaling benchmarks first** to validate physics + model correctness under high-throughput conditions, then profile and optimize **consumer mobile chip latency** against the 16.6ms runtime gate.
+| Stage | Folder | What is there today |
+|---|---|---|
+| Visual frontend | `src/frontend/` | Ingestion, face blurring and pose stubs |
+| Kinetics | `src/kinetics/` | Gait dynamics and physics consistency stubs |
+| Simulation | `src/simulation/` | Muscle control and synergy skeletons |
+| Biomarkers | `src/biomarkers/` | Knee contact force estimator scaffold |
 
-## Citation Note
-
-`ARCHITECTURE_SPEC.md` intentionally preserves the original source citation marker syntax (e.g., `[cite_start]`, `[cite: N]`) so no technical references or formula context are lost during initialization.
-
-## Quick Start
+## Run the checks
 
 ```bash
 python -m pip install -r requirements.txt
 pytest -q
 ```
-VeloMove
+
+The tests cover pipeline shapes, config thresholds and the latency gate.
+
+## Target gates
+
+Set in [config.yaml](config.yaml): 16.6 ms latency, joint angle RMSE up to 4.5 degrees, ground reaction force error up to 3.9%, knee contact force R2 of at least 0.95. Benchmark on a desktop GPU first, then tune for mobile chips.
+
+## Read further
+
+- [Architecture spec](ARCHITECTURE_SPEC.md). It keeps its source citation markers (`[cite: N]`) on purpose.
+- [Testing strategy](docs/testing_strategy.md)
+- [The paper](https://saikanagat.com/papers/monocular-biomechanics)
